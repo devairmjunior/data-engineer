@@ -28,4 +28,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       run: |
-        python infrastructure_as_code/5_continuous_integration/tests/test_dummy.py
+        python infrastructure_as_code/5_continuous_integration/deploy.py
