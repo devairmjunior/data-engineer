@@ -4,7 +4,7 @@ Resources:
   MeuBucketS3:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: my_second_bucket_devair
+      BucketName: my-second-bucket-devair
       BucketEncryption:
         ServerSideEncryptionConfiguration: 
           - ServerSideEncryptionByDefault:
