@@ -1,0 +1,103 @@
+Description: Creates a data lake
+
+
+Resources:
+
+  DataLakeLogsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3-devair-production-data-lake-logs
+
+  DataLakeBronzeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3-devair-production-data-lake-bronze
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LoggingConfiguration:
+          DestinationBucketName: !Ref DataLakeLogsBucket
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: abort-incomplete-multipart-uploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+          - Id: move-old-objects-to-intelligent-tiering
+            Status: Enabled
+            Transitions:
+              - StorageClass: INTELLIGENT_TIERING
+                TransitionInDays: 90
+          - Id: move-old-versions-to-cheaper-tiering
+            Status: Enabled
+            NoncurrentVersionTransitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+
+  DataLakeSilverBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3-devair-production-data-lake-silver
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  DataLakeGoldBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3-devair-production-data-lake-gold
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+
+Outputs:
+  DataLakeBronzeBucketArn:
+    Value: !GetAtt DataLakeBronzeBucket.Arn
+    Export:
+      Name: data-lake-DataLakeBronzeBucketArn
+
+  DataLakeSilverBucketArn:
+    Value: !GetAtt DataLakeSilverBucket.Arn
+    Export:
+      Name: data-lake-DataLakeSilverBucketArn
+
+  DataLakeGoldBucketArn:
+    Value: !GetAtt DataLakeGoldBucket.Arn
+    Export:
+      Name: data-lake-DataLakeGoldBucketArn
+
+  DataLakeBronzeBucketName:
+    Value: !Ref DataLakeBronzeBucket
+    Export:
+      Name: data-lake-DataLakeBronzeBucketName
+
+  DataLakeSilverBucketName:
+    Value: !Ref DataLakeSilverBucket
+    Export:
+      Name: data-lake-DataLakeSilverBucketName
+
+  DataLakeGoldBucketName:
+    Value: !Ref DataLakeGoldBucket
+    Export:
+      Name: data-lake-DataLakeGoldBucketName

@@ -2,7 +2,7 @@ name: Deploy S3 bucket
 
 on:
   push:
-    branches: [ master ]
+    branches: [ s3-bucket ]
 
 jobs:
   deploy:
